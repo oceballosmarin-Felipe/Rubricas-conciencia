@@ -4,203 +4,174 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pedagogía de la Conciencia App</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="manifest" href="manifest.json">
-  JavaScript
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brandPrimary: '#1e3a8a',
-            brandAccent: '#0d9488',
-            brandBg: '#f8fafc'
-          }
-        }
-      }
-    }
-  </script>
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; font-family: system-ui, -apple-system, sans-serif; }
+    .header-banner { background-color: #1a237e; color: white; padding: 20px 0; }
+    .card { border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .hidden { display: none !important; }
+  </style>
 </head>
-<body class="bg-brandBg text-slate-800 font-sans min-h-screen flex flex-col">
+<body>
 
   <!-- Encabezado Principal -->
-  <header class="bg-brandPrimary text-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold tracking-wide">Pedagogía de la Conciencia</h1>
-      <span class="text-xs bg-brandAccent px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">Educación Integral</span>
+  <header class="header-banner text-center mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h2 class="m-0 fs-4 fw-bold">Pedagogía de la Conciencia</h2>
+      <div id="userInfoHeader" class="d-flex align-items-center gap-2">
+        <!-- Estado de Sesión -->
+      </div>
     </div>
   </header>
 
-  <!-- Contenido Principal -->
-  <main class="flex-grow max-w-4xl w-full mx-auto p-4 space-y-6">
+  <div class="container mb-5" style="max-width: 900px;">
 
-    <!-- Selector de Capítulos -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-      <label for="chapterSelect" class="block text-sm font-semibold text-slate-700 mb-2">Seleccionar Capítulo de Estudio:</label>
-      <select id="chapterSelect" onchange="loadChapterData()" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandAccent focus:outline-none text-slate-800 bg-white">
-        <option value="1">Capítulo 1: Fundamentos de la Conciencia Humana</option>
-        <option value="2">Capítulo 2: Conciencia y Salud Integral</option>
-        <option value="3">Capítulo 3: El Rol del Docente en la Formación Ética</option>
-        <option value="4">Capítulo 4: Implementación y Evaluación de la Ética Profesional</option>
-        <option value="5">Capítulo 5: Conciencia Investigativa y Derechos Humanos</option>
-      </select>
-    </section>
+    <!-- VISTA 1: INICIO DE SESIÓN / REGISTRO DE DOCENTE -->
+    <div id="view-auth" class="card p-4 mb-4">
+      <h4 class="card-title text-primary mb-3" id="authTitle">Inicio de Sesión de Docente</h4>
+      <form id="formAuth">
+        <div class="mb-3">
+          <label class="form-label">Nombre de Usuario o Docente:</label>
+          <input type="text" id="authUsuario" class="form-control" required placeholder="Ej. Prof. Carlos">
+        </div>
+        <div class="mb-3" id="groupEmail">
+          <label class="form-label">Correo Electrónico:</label>
+          <input type="email" id="authEmail" class="form-control" placeholder="correo@ejemplo.com">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Contraseña:</label>
+          <input type="password" id="authPassword" class="form-control" required>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary" id="btnAuthSubmit">Ingresar</button>
+          <button type="button" class="btn btn-outline-secondary" id="btnToggleAuth">Crear nueva cuenta</button>
+        </div>
+      </form>
+    </div>
 
-    <!-- Resumen y Metodología -->
-    <section id="chapterOverview" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3">
-      <!-- Se puebla dinámicamente -->
-    </section>
+    <!-- VISTA 2: PANEL DE ADMINISTRACIÓN (Solo Visible para Admins) -->
+    <div id="view-admin" class="card p-4 mb-4 border-warning hidden">
+      <h4 class="card-title text-warning-emphasis">Panel de Administración de Usuarios</h4>
+      <div class="table-responsive mt-3">
+        <table class="table table-striped table-hover align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="adminUserTableBody">
+            <!-- Cargado Dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-    <!-- Evaluador de Rúbrica -->
-    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
-      <div class="border-b border-slate-100 pb-3">
-        <h2 class="text-lg font-bold text-brandPrimary">Rúbrica de Evaluación Formativa</h2>
-        <p class="text-xs text-slate-500">Evalúa el nivel de logro de 1 a 5 en cada criterio según la escala del libro.</p>
+    <!-- VISTA 3: REGISTRO DEL ESTUDIANTE Y RÚBRICA (Solo Visible al Iniciar Sesión) -->
+    <div id="view-evaluation" class="hidden">
+      
+      <!-- Datos del Evaluado -->
+      <div class="card p-4 mb-4 border-primary">
+        <h5 class="card-title text-primary">Información de la Evaluación</h5>
+        <div class="row g-3 mt-1">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Docente Evaluador:</label>
+            <input type="text" id="evalDocenteActivo" class="form-control" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Nombre del Estudiante Evaluado:</label>
+            <input type="text" id="evalEstudiante" class="form-control" placeholder="Nombre completo del estudiante" required>
+          </div>
+        </div>
       </div>
 
-      <form id="rubricForm" class="space-y-4">
-        <div id="rubricCriteriaContainer" class="space-y-4">
-          <!-- Criterios dinámicos -->
+      <!-- Selección de Capítulo -->
+      <div class="card p-4 mb-4">
+        <label class="form-label fw-bold">Seleccionar Capítulo de Estudio:</label>
+        <select id="selectCapitulo" class="form-select">
+          <option value="1">Capítulo 1: Fundamentos de la Conciencia Humana</option>
+          <option value="2">Capítulo 2: Conciencia y Salud Integral</option>
+          <option value="3">Capítulo 3: El Rol del Docente en la Formación Ética</option>
+          <option value="4">Capítulo 4: Implementación y Evaluación de la Ética Profesional</option>
+          <option value="5">Capítulo 5: Conciencia Investigativa y Derechos Humanos</option>
+        </select>
+      </div>
+
+      <!-- Criterios de la Rúbrica -->
+      <div class="card p-4 mb-4">
+        <h5 class="card-title">Rúbrica de Evaluación Formativa</h5>
+        <p class="text-muted small">Evalúa el nivel de logro de 1 a 5 en cada criterio según la escala del libro.</p>
+
+        <div class="mb-3">
+          <label class="form-label font-weight-bold">Profundidad de la Reflexión (40%)</label>
+          <select id="criterio1" class="form-select">
+            <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+            <option value="2">2 - Nivel En Desarrollo / Bajo</option>
+            <option value="3">3 - Nivel Aceptable / Medio</option>
+            <option value="4">4 - Nivel Destacado / Alto</option>
+            <option value="5">5 - Nivel Excelente / Notable</option>
+          </select>
         </div>
 
-        <button type="button" onclick="calculateScore()" class="w-full bg-brandAccent hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg shadow transition duration-150">
-          Calcular y Registrar Evaluación
-        </button>
-      </form>
+        <div class="mb-3">
+          <label class="form-label font-weight-bold">Conexión de Conceptos (30%)</label>
+          <select id="criterio2" class="form-select">
+            <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+            <option value="2">2 - Nivel En Desarrollo / Bajo</option>
+            <option value="3">3 - Nivel Aceptable / Medio</option>
+            <option value="4">4 - Nivel Destacado / Alto</option>
+            <option value="5">5 - Nivel Excelente / Notable</option>
+          </select>
+        </div>
 
-      <!-- Resultado de Evaluación -->
-      <div id="evaluationResult" class="hidden mt-4 p-4 rounded-lg border"></div>
-    </section>
+        <div class="mb-3">
+          <label class="form-label font-weight-bold">Claridad y Coherencia (30%)</label>
+          <select id="criterio3" class="form-select">
+            <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+            <option value="2">2 - Nivel En Desarrollo / Bajo</option>
+            <option value="3">3 - Nivel Aceptable / Medio</option>
+            <option value="4">4 - Nivel Destacado / Alto</option>
+            <option value="5">5 - Nivel Excelente / Notable</option>
+          </select>
+        </div>
 
-  </main>
+        <button id="btnCalcular" class="btn btn-success mt-2">Calcular y Registrar Evaluación</button>
+      </div>
 
-  <!-- Lógica de la Aplicación -->
-  <script>
-    // Base de datos integrada desde el libro
-    const chaptersData = {
-      1: {
-        title: "Fundamentos de la Conciencia Humana",
-        summary: "Explora la evolución histórica, biológica, cognitiva y trascendental de la conciencia, integrando los niveles individual, social y colectivo.",
-        rubric: [
-          { name: "Profundidad de la Reflexión (40%)", weight: 0.4 },
-          { name: "Conexión de Conceptos (30%)", weight: 0.3 },
-          { name: "Claridad y Coherencia (30%)", weight: 0.3 }
-        ]
-      },
-      2: {
-        title: "Conciencia y Salud Integral (Física y Mental)",
-        summary: "Aborda el autocuidado, la prevención del burnout académico y las estrategias para mantener el equilibrio psicoemocional en el entorno educativo.",
-        rubric: [
-          { name: "Identificación de necesidades (30%)", weight: 0.3 },
-          { name: "Diseño de estrategias de autocuidado (40%)", weight: 0.4 },
-          { name: "Profundidad de la reflexión (30%)", weight: 0.3 }
-        ]
-      },
-      3: {
-        title: "El Rol del Docente en la Formación Ética y la Conciencia",
-        summary: "Analiza al docente como facilitador y modelo de integridad a través del currículo oculto, el debate socrático y el análisis de casos.",
-        rubric: [
-          { name: "Análisis del Dilema Ético (40%)", weight: 0.4 },
-          { name: "Justificación de la Solución (30%)", weight: 0.3 },
-          { name: "Colaboración y Diálogo (30%)", weight: 0.3 }
-        ]
-      },
-      4: {
-        title: "Implementación y Evaluación de la Ética Profesional",
-        summary: "Presenta modelos para evaluar competencias éticas y abordar los desafíos del siglo XXI (IA, corrupción y sostenibilidad).",
-        rubric: [
-          { name: "Análisis del Dilema (40%)", weight: 0.4 },
-          { name: "Propuesta de Solución (30%)", weight: 0.3 },
-          { name: "Habilidad de Argumentación (30%)", weight: 0.3 }
-        ]
-      },
-      5: {
-        title: "Conciencia Investigativa y Derechos Humanos",
-        summary: "Examina la ética en la investigación, el consentimiento informado y el trabajo con poblaciones vulnerables a través de la IAP.",
-        rubric: [
-          { name: "Aplicación de Principios Éticos (40%)", weight: 0.4 },
-          { name: "Impacto Social y Derechos Humanos (30%)", weight: 0.3 },
-          { name: "Originalidad y Viabilidad (30%)", weight: 0.3 }
-        ]
-      }
-    };
+      <!-- Resultado y Confirmación -->
+      <div id="resultadoBox" class="card p-4 mb-4 hidden bg-light">
+        <h5>Puntaje Final: <span id="lblPuntaje" class="text-primary">0.00</span> / 5.00</h5>
+        <p class="mb-0"><strong>Estado:</strong> <span id="lblEstado">---</span></p>
+      </div>
 
-    function loadChapterData() {
-      const selectedId = document.getElementById('chapterSelect').value;
-      const chapter = chaptersData[selectedId];
+      <!-- Historial de Evaluaciones -->
+      <div class="card p-4">
+        <h5 class="card-title mb-3">Historial de Evaluaciones Registradas</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Fecha</th>
+                <th>Docente</th>
+                <th>Estudiante</th>
+                <th>Capítulo</th>
+                <th>Nota</th>
+              </tr>
+            </thead>
+            <tbody id="tablaHistorialBody">
+              <!-- Historial Persistente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      // Cargar Resumen
-      document.getElementById('chapterOverview').innerHTML = `
-        <h2 class="text-xl font-bold text-brandPrimary">${chapter.title}</h2>
-        <p class="text-sm text-slate-600 leading-relaxed">${chapter.summary}</p>
-      `;
+    </div>
+  </div>
 
-      // Cargar Criterios de Rúbrica
-      const container = document.getElementById('rubricCriteriaContainer');
-      container.innerHTML = '';
-
-      chapter.rubric.forEach((criterion, index) => {
-        const itemHtml = `
-          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
-            <label class="block text-sm font-medium text-slate-700 mb-1">${criterion.name}</label>
-            <select id="criterion_${index}" class="w-full p-2 border border-slate-300 rounded bg-white text-sm">
-              <option value="1">1 - Nivel Inicial / Muy Bajo</option>
-              <option value="2">2 - Nivel En Desarrollo / Bajo</option>
-              <option value="3">3 - Nivel Aceptable / Medio</option>
-              <option value="4">4 - Nivel Destacado / Alto</option>
-              <option value="5">5 - Nivel Excelente / Notable</option>
-            </select>
-          </div>
-        `;
-        container.innerHTML += itemHtml;
-      });
-
-      document.getElementById('evaluationResult').classList.add('hidden');
-    }
-
-    function calculateScore() {
-      const selectedId = document.getElementById('chapterSelect').value;
-      const chapter = chaptersData[selectedId];
-      let totalWeightedScore = 0;
-
-      chapter.rubric.forEach((criterion, index) => {
-        const score = parseFloat(document.getElementById(`criterion_${index}`).value);
-        totalWeightedScore += score * criterion.weight;
-      });
-
-      const resultDiv = document.getElementById('evaluationResult');
-      resultDiv.classList.remove('hidden');
-
-      let feedbackClass = "";
-      let levelText = "";
-
-      if (totalWeightedScore >= 4.2) {
-        feedbackClass = "bg-green-50 border-green-300 text-green-800";
-        levelText = "Excelente / Comprensión Consolidada";
-      } else if (totalWeightedScore >= 3.0) {
-        feedbackClass = "bg-amber-50 border-amber-300 text-amber-800";
-        levelText = "Satisfactorio / En Proceso de Transformación";
-      } else {
-        feedbackClass = "bg-red-50 border-red-300 text-red-800";
-        levelText = "Requiere Profundización y Reflexión";
-      }
-
-      resultDiv.className = `mt-4 p-4 rounded-lg border ${feedbackClass}`;
-      resultDiv.innerHTML = `
-        <h3 class="font-bold text-base mb-1">Puntaje Final: ${totalWeightedScore.toFixed(2)} / 5.00</h3>
-        <p class="text-sm"><strong>Estado:</strong> ${levelText}</p>
-      `;
-
-      // Guardar localmente el avance
-      localStorage.setItem(`eval_cap_${selectedId}`, totalWeightedScore.toFixed(2));
-    }
-
-    // Carga inicial
-    window.onload = loadChapterData;
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
