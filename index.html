@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedagogía de la Conciencia App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json">
+  JavaScript
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandPrimary: '#1e3a8a',
+            brandAccent: '#0d9488',
+            brandBg: '#f8fafc'
+          }
+        }
+      }
+    }
+  </script>
+
+</head>
+<body class="bg-brandBg text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Encabezado Principal -->
+  <header class="bg-brandPrimary text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold tracking-wide">Pedagogía de la Conciencia</h1>
+      <span class="text-xs bg-brandAccent px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">Educación Integral</span>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="flex-grow max-w-4xl w-full mx-auto p-4 space-y-6">
+
+    <!-- Selector de Capítulos -->
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+      <label for="chapterSelect" class="block text-sm font-semibold text-slate-700 mb-2">Seleccionar Capítulo de Estudio:</label>
+      <select id="chapterSelect" onchange="loadChapterData()" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandAccent focus:outline-none text-slate-800 bg-white">
+        <option value="1">Capítulo 1: Fundamentos de la Conciencia Humana</option>
+        <option value="2">Capítulo 2: Conciencia y Salud Integral</option>
+        <option value="3">Capítulo 3: El Rol del Docente en la Formación Ética</option>
+        <option value="4">Capítulo 4: Implementación y Evaluación de la Ética Profesional</option>
+        <option value="5">Capítulo 5: Conciencia Investigativa y Derechos Humanos</option>
+      </select>
+    </section>
+
+    <!-- Resumen y Metodología -->
+    <section id="chapterOverview" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3">
+      <!-- Se puebla dinámicamente -->
+    </section>
+
+    <!-- Evaluador de Rúbrica -->
+    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+      <div class="border-b border-slate-100 pb-3">
+        <h2 class="text-lg font-bold text-brandPrimary">Rúbrica de Evaluación Formativa</h2>
+        <p class="text-xs text-slate-500">Evalúa el nivel de logro de 1 a 5 en cada criterio según la escala del libro.</p>
+      </div>
+
+      <form id="rubricForm" class="space-y-4">
+        <div id="rubricCriteriaContainer" class="space-y-4">
+          <!-- Criterios dinámicos -->
+        </div>
+
+        <button type="button" onclick="calculateScore()" class="w-full bg-brandAccent hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg shadow transition duration-150">
+          Calcular y Registrar Evaluación
+        </button>
+      </form>
+
+      <!-- Resultado de Evaluación -->
+      <div id="evaluationResult" class="hidden mt-4 p-4 rounded-lg border"></div>
+    </section>
+
+  </main>
+
+  <!-- Lógica de la Aplicación -->
+  <script>
+    // Base de datos integrada desde el libro
+    const chaptersData = {
+      1: {
+        title: "Fundamentos de la Conciencia Humana",
+        summary: "Explora la evolución histórica, biológica, cognitiva y trascendental de la conciencia, integrando los niveles individual, social y colectivo.",
+        rubric: [
+          { name: "Profundidad de la Reflexión (40%)", weight: 0.4 },
+          { name: "Conexión de Conceptos (30%)", weight: 0.3 },
+          { name: "Claridad y Coherencia (30%)", weight: 0.3 }
+        ]
+      },
+      2: {
+        title: "Conciencia y Salud Integral (Física y Mental)",
+        summary: "Aborda el autocuidado, la prevención del burnout académico y las estrategias para mantener el equilibrio psicoemocional en el entorno educativo.",
+        rubric: [
+          { name: "Identificación de necesidades (30%)", weight: 0.3 },
+          { name: "Diseño de estrategias de autocuidado (40%)", weight: 0.4 },
+          { name: "Profundidad de la reflexión (30%)", weight: 0.3 }
+        ]
+      },
+      3: {
+        title: "El Rol del Docente en la Formación Ética y la Conciencia",
+        summary: "Analiza al docente como facilitador y modelo de integridad a través del currículo oculto, el debate socrático y el análisis de casos.",
+        rubric: [
+          { name: "Análisis del Dilema Ético (40%)", weight: 0.4 },
+          { name: "Justificación de la Solución (30%)", weight: 0.3 },
+          { name: "Colaboración y Diálogo (30%)", weight: 0.3 }
+        ]
+      },
+      4: {
+        title: "Implementación y Evaluación de la Ética Profesional",
+        summary: "Presenta modelos para evaluar competencias éticas y abordar los desafíos del siglo XXI (IA, corrupción y sostenibilidad).",
+        rubric: [
+          { name: "Análisis del Dilema (40%)", weight: 0.4 },
+          { name: "Propuesta de Solución (30%)", weight: 0.3 },
+          { name: "Habilidad de Argumentación (30%)", weight: 0.3 }
+        ]
+      },
+      5: {
+        title: "Conciencia Investigativa y Derechos Humanos",
+        summary: "Examina la ética en la investigación, el consentimiento informado y el trabajo con poblaciones vulnerables a través de la IAP.",
+        rubric: [
+          { name: "Aplicación de Principios Éticos (40%)", weight: 0.4 },
+          { name: "Impacto Social y Derechos Humanos (30%)", weight: 0.3 },
+          { name: "Originalidad y Viabilidad (30%)", weight: 0.3 }
+        ]
+      }
+    };
+
+    function loadChapterData() {
+      const selectedId = document.getElementById('chapterSelect').value;
+      const chapter = chaptersData[selectedId];
+
+      // Cargar Resumen
+      document.getElementById('chapterOverview').innerHTML = `
+        <h2 class="text-xl font-bold text-brandPrimary">${chapter.title}</h2>
+        <p class="text-sm text-slate-600 leading-relaxed">${chapter.summary}</p>
+      `;
+
+      // Cargar Criterios de Rúbrica
+      const container = document.getElementById('rubricCriteriaContainer');
+      container.innerHTML = '';
+
+      chapter.rubric.forEach((criterion, index) => {
+        const itemHtml = `
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <label class="block text-sm font-medium text-slate-700 mb-1">${criterion.name}</label>
+            <select id="criterion_${index}" class="w-full p-2 border border-slate-300 rounded bg-white text-sm">
+              <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+              <option value="2">2 - Nivel En Desarrollo / Bajo</option>
+              <option value="3">3 - Nivel Aceptable / Medio</option>
+              <option value="4">4 - Nivel Destacado / Alto</option>
+              <option value="5">5 - Nivel Excelente / Notable</option>
+            </select>
+          </div>
+        `;
+        container.innerHTML += itemHtml;
+      });
+
+      document.getElementById('evaluationResult').classList.add('hidden');
+    }
+
+    function calculateScore() {
+      const selectedId = document.getElementById('chapterSelect').value;
+      const chapter = chaptersData[selectedId];
+      let totalWeightedScore = 0;
+
+      chapter.rubric.forEach((criterion, index) => {
+        const score = parseFloat(document.getElementById(`criterion_${index}`).value);
+        totalWeightedScore += score * criterion.weight;
+      });
+
+      const resultDiv = document.getElementById('evaluationResult');
+      resultDiv.classList.remove('hidden');
+
+      let feedbackClass = "";
+      let levelText = "";
+
+      if (totalWeightedScore >= 4.2) {
+        feedbackClass = "bg-green-50 border-green-300 text-green-800";
+        levelText = "Excelente / Comprensión Consolidada";
+      } else if (totalWeightedScore >= 3.0) {
+        feedbackClass = "bg-amber-50 border-amber-300 text-amber-800";
+        levelText = "Satisfactorio / En Proceso de Transformación";
+      } else {
+        feedbackClass = "bg-red-50 border-red-300 text-red-800";
+        levelText = "Requiere Profundización y Reflexión";
+      }
+
+      resultDiv.className = `mt-4 p-4 rounded-lg border ${feedbackClass}`;
+      resultDiv.innerHTML = `
+        <h3 class="font-bold text-base mb-1">Puntaje Final: ${totalWeightedScore.toFixed(2)} / 5.00</h3>
+        <p class="text-sm"><strong>Estado:</strong> ${levelText}</p>
+      `;
+
+      // Guardar localmente el avance
+      localStorage.setItem(`eval_cap_${selectedId}`, totalWeightedScore.toFixed(2));
+    }
+
+    // Carga inicial
+    window.onload = loadChapterData;
+  </script>
+</body>
+</html>
