@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador de Rúbricas - Pedagogía de la Conciencia</title>
+    <title>Evaluador de Rúbricas - Ecosistema Pedagógico</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <header>
-        <h1>Pedagogía de la Conciencia</h1>
-        <p>Sistema de Evaluación y Generación de Reportes</p>
+        <h1>Ecosistema de Pedagogías Transformadoras</h1>
+        <p>Sistema Dinámico de Evaluación por Rúbricas y Libros DNDA</p>
     </header>
 
     <main class="container">
@@ -44,25 +44,28 @@
                 </div>
             </fieldset>
 
-            <!-- Sección 2: Selección de Contenido -->
+            <!-- Sección 2: Selección Dinámica de Libro, Capítulo y Rúbrica -->
             <fieldset>
-                <legend>2. Selección de Contenido y Rúbrica</legend>
+                <legend>2. Selección de Obra, Capítulo y Rúbrica</legend>
 
                 <div class="form-group">
-                    <label for="chapterSelect">Capítulo:</label>
-                    <select id="chapterSelect" required>
-                        <option value="Capítulo 1: Fundamentos de la Conciencia Humana">Capítulo 1: Fundamentos de la Conciencia Humana</option>
-                        <option value="Capítulo 2: Conciencia y Salud Integral">Capítulo 2: Conciencia y Salud Integral</option>
-                        <option value="Capítulo 3: El Rol del Docente en la Formación Ética">Capítulo 3: El Rol del Docente en la Formación Ética</option>
-                        <option value="Capítulo 8: Pedagogía de la Trascendencia">Capítulo 8: Pedagogía de la Trascendencia</option>
+                    <label for="bookSelect"><strong>Obra / Libro:</strong></label>
+                    <select id="bookSelect" required>
+                        <option value="">-- Selecciona un libro del programa --</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="rubricSelect">Actividad / Rúbrica:</label>
-                    <select id="rubricSelect" required>
-                        <option value="Rúbrica 1: Diario de Reflexión 'Mi Mapa de Conciencia'">Rúbrica 1: Diario de Reflexión 'Mi Mapa de Conciencia'</option>
-                        <option value="Rúbrica 2: Taller 'Debate Socrático sobre Niveles de Conciencia'">Rúbrica 2: Taller 'Debate Socrático sobre Niveles de Conciencia'</option>
+                    <label for="chapterSelect">Capítulo / Unidad:</label>
+                    <select id="chapterSelect" required disabled>
+                        <option value="">-- Primero selecciona un libro --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="rubricSelect">Actividad / Rúbrica Analítica:</label>
+                    <select id="rubricSelect" required disabled>
+                        <option value="">-- Primero selecciona un capítulo --</option>
                     </select>
                 </div>
             </fieldset>
@@ -72,38 +75,38 @@
                 <legend>3. Criterios de Calificación (1 a 5)</legend>
 
                 <div class="criterion">
-                    <label for="criterion1"><strong>Profundidad de la Reflexión (40%)</strong></label>
-                    <p class="description">Grado de introspección y cuestionamiento de patrones de pensamiento.</p>
+                    <label for="criterion1"><strong>Profundidad de la Reflexión / Contenido (40%)</strong></label>
+                    <p class="description">Grado de introspección, dominio conceptual e integración pedagógica.</p>
                     <select id="criterion1" required>
-                        <option value="5">5 - Nivel Excelente / Logro Destacado</option>
-                        <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
-                        <option value="3">3 - Nivel Aceptable / Logro Medio</option>
-                        <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
-                        <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+                        <option value="5">5 - Trascendente / Logro Destacado</option>
+                        <option value="4">4 - Satisfactorio / Logro Alto</option>
+                        <option value="3">3 - En Proceso / Logro Medio</option>
+                        <option value="2">2 - Inicial / Logro Bajo</option>
+                        <option value="1">1 - Insuficiente / Muy Bajo</option>
                     </select>
                 </div>
 
                 <div class="criterion">
-                    <label for="criterion2"><strong>Conexión de Conceptos (30%)</strong></label>
-                    <p class="description">Relación entre la experiencia personal y la conciencia individual y social.</p>
+                    <label for="criterion2"><strong>Conexión y Aplicación Práctica (30%)</strong></label>
+                    <p class="description">Relación entre la teoría, el contexto del aula y la dimensión ética.</p>
                     <select id="criterion2" required>
-                        <option value="5">5 - Nivel Excelente / Logro Destacado</option>
-                        <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
-                        <option value="3">3 - Nivel Aceptable / Logro Medio</option>
-                        <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
-                        <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+                        <option value="5">5 - Trascendente / Logro Destacado</option>
+                        <option value="4">4 - Satisfactorio / Logro Alto</option>
+                        <option value="3">3 - En Proceso / Logro Medio</option>
+                        <option value="2">2 - Inicial / Logro Bajo</option>
+                        <option value="1">1 - Insuficiente / Muy Bajo</option>
                     </select>
                 </div>
 
                 <div class="criterion">
-                    <label for="criterion3"><strong>Claridad y Coherencia (30%)</strong></label>
-                    <p class="description">Organización, redacción clara y uso preciso de los términos.</p>
+                    <label for="criterion3"><strong>Coherencia, Claridad y Evidencia (30%)</strong></label>
+                    <p class="description">Organización, rigor en el registro de la bitácora y síntesis conceptual.</p>
                     <select id="criterion3" required>
-                        <option value="5">5 - Nivel Excelente / Logro Destacado</option>
-                        <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
-                        <option value="3">3 - Nivel Aceptable / Logro Medio</option>
-                        <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
-                        <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+                        <option value="5">5 - Trascendente / Logro Destacado</option>
+                        <option value="4">4 - Satisfactorio / Logro Alto</option>
+                        <option value="3">3 - En Proceso / Logro Medio</option>
+                        <option value="2">2 - Inicial / Logro Bajo</option>
+                        <option value="1">1 - Insuficiente / Muy Bajo</option>
                     </select>
                 </div>
             </fieldset>
@@ -124,14 +127,14 @@
                         <tr>
                             <th>Fecha</th>
                             <th>Estudiante</th>
-                            <th>Grado</th>
+                            <th>Libro</th>
                             <th>Capítulo</th>
                             <th>Nota Final</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="records-body">
-                        <!-- Las evaluaciones se cargarán dinámicamente aquí -->
+                        <!-- Carga dinámica de registros -->
                     </tbody>
                 </table>
             </div>
