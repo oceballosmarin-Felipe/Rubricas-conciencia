@@ -1,290 +1,143 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pedagogía de la Conciencia App</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="manifest" href="manifest.json">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brandPrimary: '#1e3a8a',
-            brandAccent: '#0d9488',
-            brandBg: '#f8fafc'
-          }
-        }
-      }
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Rúbricas - Pedagogía de la Conciencia</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-brandBg text-slate-800 font-sans min-h-screen flex flex-col">
+<body>
 
-  <!-- Header -->
-  <header class="bg-brandPrimary text-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div>
-        <h1 class="text-xl font-bold tracking-wide">Pedagogía de la Conciencia</h1>
-        <p class="text-xs text-slate-300" id="userBadge">Evaluador: Sin identificar</p>
-      </div>
-      <span class="text-xs bg-brandAccent px-2.5 py-1 rounded-full uppercase font-semibold">16 Capítulos</span>
-    </div>
-  </header>
+    <header>
+        <h1>Pedagogía de la Conciencia</h1>
+        <p>Sistema de Evaluación y Generación de Reportes</p>
+    </header>
 
-  <!-- Contenido -->
-  <main class="flex-grow max-w-4xl w-full mx-auto p-4 space-y-6">
+    <main class="container">
+        <form id="rubric-form">
+            <!-- Sección 1: Datos Generales -->
+            <fieldset>
+                <legend>1. Identificación de la Evaluación</legend>
+                
+                <div class="form-group">
+                    <label for="evaluatorName">Nombre del Evaluador:</label>
+                    <input type="text" id="evaluatorName" required placeholder="Ej. Prof. Octavio Ceballos">
+                </div>
 
-    <!-- Datos del Evaluador y Estudiante -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
-      <h2 class="text-md font-bold text-brandPrimary border-b pb-2">1. Identificación de la Evaluación</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre del Docente / Evaluador:</label>
-          <input type="text" id="teacherName" placeholder="Ej. Prof. Octavio Ceballos" oninput="updateUserBadge()" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brandAccent focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Rol del Evaluador:</label>
-          <select id="userRole" onchange="updateUserBadge()" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brandAccent focus:outline-none">
-            <option value="Docente">Docente</option>
-            <option value="Administrador">Administrador</option>
-          </select>
-        </div>
-      </div>
+                <div class="form-group">
+                    <label for="evaluatorRole">Rol del Evaluador:</label>
+                    <select id="evaluatorRole" required>
+                        <option value="Docente">Docente</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Coordinador">Coordinador</option>
+                    </select>
+                </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre del Estudiante Evaluado:</label>
-          <input type="text" id="studentName" placeholder="Ej. Felipe Valencia" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brandAccent focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Grado / Grupo / Código:</label>
-          <input type="text" id="studentGroup" placeholder="Ej. 10°A" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brandAccent focus:outline-none">
-        </div>
-      </div>
-    </section>
+                <div class="form-group">
+                    <label for="studentName">Nombre del Estudiante Evaluado:</label>
+                    <input type="text" id="studentName" required placeholder="Ej. Felipe Valencia">
+                </div>
 
-    <!-- Selecciones de Rúbrica -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
-      <h2 class="text-md font-bold text-brandPrimary border-b pb-2">2. Selección del Contenido</h2>
-      <div>
-        <label for="chapterSelect" class="block text-xs font-semibold text-slate-600 mb-1">Capítulo:</label>
-        <select id="chapterSelect" onchange="onChapterChange()" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandAccent focus:outline-none bg-white text-sm">
-        </select>
-      </div>
+                <div class="form-group">
+                    <label for="studentGroup">Grado / Grupo / Código:</label>
+                    <input type="text" id="studentGroup" required placeholder="Ej. 10°A">
+                </div>
+            </fieldset>
 
-      <div>
-        <label for="rubricSelect" class="block text-xs font-semibold text-slate-600 mb-1">Actividad / Rúbrica:</label>
-        <select id="rubricSelect" onchange="loadRubricCriteria()" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandAccent focus:outline-none bg-white text-sm">
-        </select>
-      </div>
-    </section>
+            <!-- Sección 2: Selección de Contenido -->
+            <fieldset>
+                <legend>2. Selección de Contenido y Rúbrica</legend>
 
-    <!-- Evaluador de Rúbrica -->
-    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
-      <div class="border-b border-slate-100 pb-3">
-        <h2 id="rubricTitle" class="text-lg font-bold text-brandPrimary">Rúbrica de Evaluación</h2>
-        <p class="text-xs text-slate-500">Asigna la calificación de 1 a 5 según el cumplimiento del logro especificado.</p>
-      </div>
+                <div class="form-group">
+                    <label for="chapterSelect">Capítulo:</label>
+                    <select id="chapterSelect" required>
+                        <option value="Capítulo 1: Fundamentos de la Conciencia Humana">Capítulo 1: Fundamentos de la Conciencia Humana</option>
+                        <option value="Capítulo 2: Conciencia y Salud Integral">Capítulo 2: Conciencia y Salud Integral</option>
+                        <option value="Capítulo 3: El Rol del Docente en la Formación Ética">Capítulo 3: El Rol del Docente en la Formación Ética</option>
+                        <option value="Capítulo 8: Pedagogía de la Trascendencia">Capítulo 8: Pedagogía de la Trascendencia</option>
+                    </select>
+                </div>
 
-      <form id="rubricForm" class="space-y-4">
-        <div id="criteriaContainer" class="space-y-4">
-          <!-- Criterios dinámicos -->
-        </div>
+                <div class="form-group">
+                    <label for="rubricSelect">Actividad / Rúbrica:</label>
+                    <select id="rubricSelect" required>
+                        <option value="Rúbrica 1: Diario de Reflexión 'Mi Mapa de Conciencia'">Rúbrica 1: Diario de Reflexión 'Mi Mapa de Conciencia'</option>
+                        <option value="Rúbrica 2: Taller 'Debate Socrático sobre Niveles de Conciencia'">Rúbrica 2: Taller 'Debate Socrático sobre Niveles de Conciencia'</option>
+                    </select>
+                </div>
+            </fieldset>
 
-        <button type="button" onclick="calculateScore()" class="w-full bg-brandAccent hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg shadow transition duration-150">
-          Calcular y Registrar Evaluación
-        </button>
-      </form>
+            <!-- Sección 3: Criterios de Evaluación -->
+            <fieldset>
+                <legend>3. Criterios de Calificación (1 a 5)</legend>
 
-      <!-- Resultado -->
-      <div id="evaluationResult" class="hidden mt-4 p-4 rounded-lg border"></div>
-    </section>
+                <div class="criterion">
+                    <label for="criterion1"><strong>Profundidad de la Reflexión (40%)</strong></label>
+                    <p class="description">Grado de introspección y cuestionamiento de patrones de pensamiento.</p>
+                    <select id="criterion1" required>
+                        <option value="5">5 - Nivel Excelente / Logro Destacado</option>
+                        <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
+                        <option value="3">3 - Nivel Aceptable / Logro Medio</option>
+                        <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
+                        <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+                    </select>
+                </div>
 
-    <!-- Historial de Evaluaciones -->
-    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h2 class="text-md font-bold text-brandPrimary">Registro de Evaluaciones Guardadas</h2>
-        <button onclick="exportToCSV()" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded hover:bg-slate-700">Exportar (CSV)</button>
-      </div>
-      <div id="historyTableContainer" class="overflow-x-auto text-xs">
-        <p class="text-slate-400 italic">No hay evaluaciones registradas en este dispositivo.</p>
-      </div>
-    </section>
+                <div class="criterion">
+                    <label for="criterion2"><strong>Conexión de Conceptos (30%)</strong></label>
+                    <p class="description">Relación entre la experiencia personal y la conciencia individual y social.</p>
+                    <select id="criterion2" required>
+                        <option value="5">5 - Nivel Excelente / Logro Destacado</option>
+                        <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
+                        <option value="3">3 - Nivel Aceptable / Logro Medio</option>
+                        <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
+                        <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+                    </select>
+                </div>
 
-  </main>
+                <div class="criterion">
+                    <label for="criterion3"><strong>Claridad y Coherencia (30%)</strong></label>
+                    <p class="description">Organización, redacción clara y uso preciso de los términos.</p>
+                    <select id="criterion3" required>
+                        <option value="5">5 - Nivel Excelente / Logro Destacado</option>
+                        <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
+                        <option value="3">3 - Nivel Aceptable / Logro Medio</option>
+                        <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
+                        <option value="1">1 - Nivel Inicial / Muy Bajo</option>
+                    </select>
+                </div>
+            </fieldset>
 
-  <script src="rubricas.js"></script>
+            <button type="submit" id="btn-save">Calcular y Registrar Evaluación</button>
+        </form>
 
-  <script>
-    let evaluationHistory = JSON.parse(localStorage.getItem('eval_history') || '[]');
-
-    function updateUserBadge() {
-      const name = document.getElementById('teacherName').value || 'Sin identificar';
-      const role = document.getElementById('userRole').value;
-      document.getElementById('userBadge').innerText = `Evaluador: ${name} (${role})`;
-    }
-
-    function initApp() {
-      const chapterSelect = document.getElementById('chapterSelect');
-      chapterSelect.innerHTML = '';
-      
-      for (const capId in appData) {
-        chapterSelect.innerHTML += `<option value="${capId}">${appData[capId].title}</option>`;
-      }
-      onChapterChange();
-      renderHistory();
-    }
-
-    function onChapterChange() {
-      const capId = document.getElementById('chapterSelect').value;
-      const rubricSelect = document.getElementById('rubricSelect');
-      rubricSelect.innerHTML = '';
-
-      if (appData[capId]) {
-        appData[capId].rubrics.forEach((r, idx) => {
-          rubricSelect.innerHTML += `<option value="${idx}">${r.title}</option>`;
-        });
-      }
-      loadRubricCriteria();
-    }
-
-    function loadRubricCriteria() {
-      const capId = document.getElementById('chapterSelect').value;
-      const rubIdx = document.getElementById('rubricSelect').value;
-      
-      if (!appData[capId] || !appData[capId].rubrics[rubIdx]) return;
-
-      const rubric = appData[capId].rubrics[rubIdx];
-      document.getElementById('rubricTitle').innerText = rubric.title;
-
-      const container = document.getElementById('criteriaContainer');
-      container.innerHTML = '';
-
-      rubric.criteria.forEach((c, index) => {
-        const itemHtml = `
-          <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-slate-800 text-sm">${c.name} (${c.weight * 100}%)</span>
+        <!-- Sección de Registros -->
+        <section class="records-section">
+            <div class="records-header">
+                <h2>Registro de Evaluaciones Guardadas</h2>
+                <button id="btn-export">Exportar (CSV)</button>
             </div>
-            <p class="text-xs text-slate-600 leading-relaxed italic bg-white p-2 rounded border border-slate-100">${c.desc}</p>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Calificación (Nivel de Logro):</label>
-              <select id="score_${index}" class="w-full p-2 border border-slate-300 rounded bg-white text-sm">
-                <option value="5">5 - Nivel Excelente / Logro Destacado</option>
-                <option value="4">4 - Nivel Satisfactorio / Logro Alto</option>
-                <option value="3">3 - Nivel Aceptable / Logro Medio</option>
-                <option value="2">2 - Nivel En Desarrollo / Logro Bajo</option>
-                <option value="1">1 - Nivel Inicial / Muy Bajo</option>
-              </select>
+            
+            <div class="table-wrapper">
+                <table id="records-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Estudiante</th>
+                            <th>Grado</th>
+                            <th>Capítulo</th>
+                            <th>Nota Final</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-body">
+                        <!-- Las evaluaciones se cargarán dinámicamente aquí -->
+                    </tbody>
+                </table>
             </div>
-          </div>
-        `;
-        container.innerHTML += itemHtml;
-      });
+        </section>
+    </main>
 
-      document.getElementById('evaluationResult').classList.add('hidden');
-    }
-
-    function calculateScore() {
-      const teacher = document.getElementById('teacherName').value.trim();
-      const student = document.getElementById('studentName').value.trim();
-      const group = document.getElementById('studentGroup').value.trim();
-
-      if (!teacher || !student) {
-        alert('Por favor, completa el nombre del Docente y del Estudiante antes de registrar la evaluación.');
-        return;
-      }
-
-      const capId = document.getElementById('chapterSelect').value;
-      const rubIdx = document.getElementById('rubricSelect').value;
-      const rubric = appData[capId].rubrics[rubIdx];
-
-      let totalScore = 0;
-      rubric.criteria.forEach((c, index) => {
-        const val = parseFloat(document.getElementById(`score_${index}`).value);
-        totalScore += val * c.weight;
-      });
-
-      const record = {
-        date: new Date().toLocaleDateString(),
-        teacher: teacher,
-        role: document.getElementById('userRole').value,
-        student: student,
-        group: group,
-        chapter: appData[capId].title,
-        rubric: rubric.title,
-        score: totalScore.toFixed(2)
-      };
-
-      evaluationHistory.push(record);
-      localStorage.setItem('eval_history', JSON.stringify(evaluationHistory));
-
-      const resultDiv = document.getElementById('evaluationResult');
-      resultDiv.classList.remove('hidden');
-      resultDiv.className = "mt-4 p-4 rounded-lg border bg-green-50 border-green-300 text-green-800";
-      resultDiv.innerHTML = `
-        <h3 class="font-bold text-base">Evaluación Registrada con Éxito</h3>
-        <p class="text-sm">Estudiante: <strong>${student}</strong> | Nota Ponderada: <strong>${totalScore.toFixed(2)} / 5.00</strong></p>
-      `;
-
-      renderHistory();
-    }
-
-    function renderHistory() {
-      const container = document.getElementById('historyTableContainer');
-      if (evaluationHistory.length === 0) {
-        container.innerHTML = `<p class="text-slate-400 italic">No hay evaluaciones registradas en este dispositivo.</p>`;
-        return;
-      }
-
-      let html = `<table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-slate-100 text-slate-700">
-            <th class="p-2 border">Fecha</th>
-            <th class="p-2 border">Docente</th>
-            <th class="p-2 border">Estudiante</th>
-            <th class="p-2 border">Rúbrica</th>
-            <th class="p-2 border">Nota</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
-      evaluationHistory.slice().reverse().forEach(item => {
-        html += `<tr class="border-b">
-          <td class="p-2 border">${item.date}</td>
-          <td class="p-2 border">${item.teacher}</td>
-          <td class="p-2 border">${item.student} (${item.group})</td>
-          <td class="p-2 border">${item.rubric}</td>
-          <td class="p-2 border font-bold">${item.score}</td>
-        </tr>`;
-      });
-
-      html += `</tbody></table>`;
-      container.innerHTML = html;
-    }
-
-    function exportToCSV() {
-      if (evaluationHistory.length === 0) return alert('No hay datos para exportar.');
-      let csv = 'Fecha,Docente,Rol,Estudiante,Grupo,Capitulo,Rubrica,Nota\n';
-      evaluationHistory.forEach(r => {
-        csv += `"${r.date}","${r.teacher}","${r.role}","${r.student}","${r.group}","${r.chapter}","${r.rubric}","${r.score}"\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.setAttribute('href', url);
-      a.setAttribute('download', 'evaluaciones_conciencia.csv');
-      a.click();
-    }
-
-    window.onload = initApp;
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js');
-    }
-  </script>
+    <script src="app.js"></script>
 </body>
 </html>
