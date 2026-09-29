@@ -1,6 +1,6 @@
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open('conciencia-app-v2').then((cache) => {
+    caches.open('conciencia-app-v3').then((cache) => {
       return cache.addAll([
         './index.html',
         './rubricas.js',
